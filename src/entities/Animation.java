@@ -2,14 +2,21 @@ package entities;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Clase que permite controlar las animaciones necesarias en la ejecución del juego
+ * de manera que utiliza la clase BufferedImage y System.nanotime() para refrescar
+ * la animación.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.1
+ *
+ */
 public class Animation {
 	
 	private BufferedImage[] frames;
 	private int currentFrame;
-	
 	private long startTime;
 	private long delay;
-	
 	private boolean playedOnce;
 	
 	public Animation() {

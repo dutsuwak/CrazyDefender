@@ -5,10 +5,22 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+import entities.Animation;
+import entities.Enemy;
 import logic.ReadProperties;
-import entities.*;
 import TileMap.TileMap;
 
+/**
+ * Clase que hereda de la clase Enemigo. Permite la instanciacion de un "Power Up" que le permite al 
+ * jugador lanzar cohetes con mayor ataque de esta forma es mas fácil matar a los enemigos. Los Jefes
+ * de nivel solo requieren dos disparos si se ha obtenido este "Power Up" previamente.
+ * Utiliza la variable took para poder identificar si el jugador ya ha tomado el objeto.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 2.0
+ * 
+ *
+ */
 public class FireballGetter extends Enemy {
 	private BufferedImage[] sprites;
 	

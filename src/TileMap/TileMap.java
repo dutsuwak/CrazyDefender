@@ -8,33 +8,37 @@ import javax.imageio.ImageIO;
 
 import gui.GamePanel;
 
+/**
+ * Clase que verifica la carga del mapa desde un archivo .map.
+ * <p>
+ * Esta clase esta basada en la vista en el video tutorial de ForeignGuyMike
+ * @author Fabian A. Solano Madriz
+ * @version 1.0.1
+ * @see <a href="https://www.youtube.com/watch?v=9dzhgsVaiSo">ForeignGuyMike Youtube Channel</a>
+ *
+ */
 public class TileMap {
 	
 	// position
 	private double x;
 	private double y;
-	
-	// bounds
+	// límites
 	private int xmin;
 	private int ymin;
 	private int xmax;
 	private int ymax;
-	
 	private double tween;
-	
-	// map
+	// mapa
 	private int[][] map;
 	private int tileSize;
 	private int numRows;
 	private int numCols;
 	private int width;
 	private int height;
-	
 	// tileset
 	private BufferedImage tileset;
 	private int numTilesAcross;
 	private Tile[][] tiles;
-	
 	// drawing
 	private int rowOffset;
 	private int colOffset;

@@ -3,17 +3,27 @@ package entities.Enemies;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import entities.Animation;
+import entities.Enemy;
 import logic.ReadProperties;
-import entities.*;
 import TileMap.TileMap;
 
+/**
+ * Clase que hereda de la clase Enemigo. Permite la instanciacion de un objeto de enemigo tipo 2.
+ * Un "bomber". Posee alta resistencia a los disparos del jugador al tocarlo explota y le resta 2
+ * vidas.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 3.0
+ * 
+ *
+ */
 public class Bomber extends Enemy{
 	
 	private BufferedImage[] sprites;
 	
 	public Bomber(TileMap tm){
 		super(tm);
-		
 		moveSpeed = 0.9;
 		maxSpeed = 0.9;
 		fallSpeed = 0.2;

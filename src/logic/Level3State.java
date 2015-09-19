@@ -1,6 +1,8 @@
 package logic;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -13,6 +15,7 @@ import entities.Enemies.Boss1;
 import entities.Enemies.Copter;
 import entities.Enemies.Fire;
 import entities.Enemies.FireballGetter;
+import entities.Enemies.Fopter;
 import entities.Enemies.Heart;
 import entities.Enemies.Relic;
 import entities.Enemies.Slugger;
@@ -23,17 +26,28 @@ import gui.GameStateManager;
 import gui.HUD;
 import gui.HUD2;
 
+/**
+ * Clase para que mediante el m�todo draw() heredado de la super clase GameState permite dibujar
+ * en pantalla lo requerido en el Nivel 3. Adem�s contiene la l�gica principal del nivel y las 
+ * verificaciones necesarias para este. Adem�s posee m�todos que permiten capturar las teclas, y 
+ * la entrada de datos del puerto serial.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 3.0
+ *
+ */
 public class Level3State extends GameState {
 	
 	private TileMap tileMap;
 	private Background bg;
 	
-	private Player player;
+	private static Player player;
 	private Boss1 boss;
 	
 	private ArrayList<Player> players;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Enemy> enemies2;
+	private ArrayList<Enemy> enemies3;
 	private ArrayList<Enemy> enemies4;
 	private ArrayList<Boss1> enemiesboss;
 	
@@ -42,10 +56,10 @@ public class Level3State extends GameState {
 	private ArrayList<Heart> hearts;
 	private ArrayList<FireballGetter> getters;
 	private ArrayList<Fire> fires;
-	
-	
+	private int FopCounter = 0;
 	private HUD hud; //Vida y Batería
 	private HUD2 hud2;//Reliquias, Tiempo, Puntos
+	private boolean trick=false;
 	
 	
 	public Level3State(GameStateManager gsm, int inhealth, int inscore){
@@ -83,6 +97,7 @@ public class Level3State extends GameState {
 	private void populateStuff(){
 		enemies = new ArrayList<Enemy>();
 		enemies2 = new ArrayList<Enemy>();
+		enemies3 = new ArrayList<Enemy>();
 		enemies4 = new ArrayList<Enemy>();
 		enemiesboss = new ArrayList<Boss1>();
 		relics = new ArrayList<Relic>();
@@ -147,7 +162,7 @@ public class Level3State extends GameState {
 		Slugger s;
 		Point[] points = new Point[]{
 				new Point(210,90),
-				new Point(35,90),
+				new Point(150,90),
 				new Point(703,150),
 				new Point(3130,160),
 				new Point(3279,70),
@@ -233,10 +248,12 @@ public class Level3State extends GameState {
 			
 		}
 	}
+	//INstaciar al jefe final
 	public void instanceBoss(){
 		Boss1 bo1;
 		Point[] pointsbo1 = new Point[]{
-				new Point(3900,110)
+				new Point(3900,110),
+				new Point(3165,170)
 
 		};
 		for(int i = 0; i < pointsbo1.length; i++){
@@ -253,6 +270,30 @@ public class Level3State extends GameState {
 			enemiesboss.add(bo1);
 			boss=bo1;
 		}
+	}
+	//INstanciar Eneigos Perseguidores
+	public void instanceFopter(){
+		if(FopCounter <= 0){
+			Fopter fop;
+			Point[] pointsfop = new Point[]{
+				new Point(2650,50),
+				new Point(3670,165)
+			};
+			for(int i = 0; i < pointsfop.length; i++){
+				fop = new Fopter(tileMap);
+				fop.setPosition(pointsfop[i].x,pointsfop[i].y);
+				fop.setStartX(pointsfop[i].x-50);
+				fop.setStartY(pointsfop[i].y);
+				if (i % 2 == 0){
+						fop.setStLEFT();
+				}
+				else{
+					fop.setStRIGHT();
+				}
+				enemies3.add(fop);
+			}
+			FopCounter=1;
+		}	
 	}
 	//CIERRE DE LA SALIDA AL LLEGAR A LA HABITACION DEL JEFE
 	public void closeExit(){
@@ -280,213 +321,235 @@ public class Level3State extends GameState {
 		}
 		
 	}
-	/////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////METODO UPDATE/////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////
+	//###########################################################################################/
+	//##################################  METODO UPDATE  ########################################/
+	//###########################################################################################/
+	//###########################################################################################/
 	public void update(){
-		bg.update();
-		if(Boss1.getlivs() <=0){
-			player.setBossKill();
-		}
-		//CONDICION DE MUERTE DEL JUGADOR
-		if(player.getHealth() <= 0 || player.getTime() <= 0){
-			SoundGame.music.stop();
-			gsm.setState(GameStateManager.GAMEOVERSTATE,0,0);
-		}
-		if(player.getRelics() >= 3 && player.getbossKill() >= 3){
-			SoundGame.music.stop();
-			int temp;
-			temp = (int)player.getTime()/60;
-			gsm.setState(GameStateManager.ENDSTATE,player.getHealth(),player.getScore()+temp);
-		}
-		//JUGADOR TOCA EL BORDE SUPERIOR
-		if(player.gety() <= 2){
-			explosions.add(new Explosion(player.getx(), player.gety())); //Añade explosion
-			player.sety(player.gety()+40);
-			player.setHealth(player.getHealth() - 1);
-		}
-		//JUGADOR TOCA EL BORDE INFERIOR
-		if(player.gety() >= 220){
-			explosions.add(new Explosion(player.getx(), player.gety())); //Añade explosion
-			player.setHealth(player.getHealth() - 1);
-			if(player.getx() >= 1060 && player.getx()<= 1875){
-				player.setx(1050);
-				player.sety(180);
+		if(pause == false){
+			bg.update();
+			if(Boss1.getlivs() <=0){
+				player.setBossKill();
 			}
-			else if(player.getx() >= 2175 && player.getx()<= 3223){
-				player.setx(2175);
-				player.sety(160);
+			//CONDICION DE MUERTE DEL JUGADOR
+			if(player.getHealth() <= 0 || player.getTime() <= 0){
+				//SoundGame.music.stop();
+				gsm.setState(GameStateManager.GAMEOVERSTATE,0,0);
 			}
-			else{
-				player.setx(player.getx()-150);
-				player.sety(player.gety()-50);
+			if(player.getRelics() >= 3 && player.getbossKill() >= 3){
+				SoundGame.music.stop();
+				int temp;
+				temp = (int)player.getTime()/60;
+				Player.resetBossCount();
+				gsm.setState(GameStateManager.ENDSTATE,player.getHealth(),player.getScore()+temp);
 			}
+			//JUGADOR TOCA EL BORDE SUPERIOR
+			if(player.gety() <= 2){
+				explosions.add(new Explosion(player.getx(), player.gety())); //Añade explosion
+				player.sety(player.gety()+25);
+				player.setHealth(player.getHealth() - 1);
+			}
+			//JUGADOR TOCA EL BORDE INFERIOR
+			if(player.gety() >= 220){
+				explosions.add(new Explosion(player.getx(), player.gety())); //Añade explosion
+				player.setHealth(player.getHealth() - 1);
+				if(player.getx() >= 1060 && player.getx()<= 1875){
+					player.setx(1050);
+					player.sety(180);
+				}
+				else if(player.getx() >= 2175 && player.getx()<= 3223){
+					player.setx(2175);
+					player.sety(160);
+				}
+				else{
+					player.setx(player.getx()-150);
+					player.sety(player.gety()-50);
+				}
 
-		}
-		//CIERRE DE SALIDA E INSTANCIACION DEL JEFE DE NIVEL
-		if (player.getx() >= 3600){
-			player.setExitCounter(1);
-			if(player.getexitCounter() >= 1 && player.getexitCounter() <3){
-				closeExit();
-				instanceBoss();
 			}
-		}
-		if(player.getx() >= 3600){
-			boss.update();
-		}
-		//INstanciacion de Bombers Especiales
-		if (player.getx() >= 1876){
-			if(player.getexitCounter() == 0){
-				instanceTempBombers();
+			//CIERRE DE SALIDA E INSTANCIACION DEL JEFE DE NIVEL
+			if (player.getx() >= 3600){
 				player.setExitCounter(1);
+				if(player.getexitCounter() >= 1 && player.getexitCounter() <3){
+					closeExit();
+					instanceBoss();
+				}
+			}
+			if(player.getx() >= 3600){
+				boss.update();
+			}
+			if(player.getx() >= 2400){
+				instanceFopter();
+			}
+			//INstanciacion de Bombers Especiales
+			if (player.getx() >= 1876){
+				if(player.getexitCounter() == 0){
+					instanceTempBombers();
+					player.setExitCounter(1);
+				}
+				
 			}
 			
-		}
-		
-		player.update();
-		tileMap.setPosition(
-				GamePanel.WIDTH / 2 - player.getx(),
-				GamePanel.HEIGHT /2 - player.gety()
-				);
+			player.update();
+			tileMap.setPosition(
+					GamePanel.WIDTH / 2 - player.getx(),
+					GamePanel.HEIGHT /2 - player.gety()
+					);
 
-		///////////////////////////////////////////////////////////////////////////////////
-		//VERIFICACION DE LOS ATAQUES HACIA LOS DIFERENTES ENEMIGOS
-		player.checkAttack(enemies,1);
-		player.checkAttack(enemies2,2);
-		player.checkAttack(enemies4,2);
-		player.checkAttackBoss(enemiesboss,1);
-		player.checkCapture(relics);
-		player.checkHearts(hearts);
-		player.checkFire(fires);
-		player.checkGetters(getters);
-		Boss1.checkAttack(players);
-		//////////////////////////////////////////////////////////////////////////////////
-		
-		//################################################################################
-		//###################### ACTUALIZACION DE OBJETOS  ###############################
-		//################################################################################
-		
-		//Actualizar Fires
-		for(int i = 0; i < fires.size(); i++){
-			Fire f = fires.get(i);
-			f.update();
-			if(f.isDead()){
-				fires.remove(i);
-				i--; //QUitar al enemigo del array
-				explosions.add(new Explosion(f.getx(), f.gety())); //Añade explosion
-																		   //al chocar.
-				player.setScore(500);//Añade Puntos por apagar el fuego.
-			}
-		}
-		//Actualizar Corazones Adicionales
-		for(int i = 0; i < hearts.size(); i++){
-			Enemy e = hearts.get(i);
-			e.update();
-			if(e.isTook()){
-				hearts.remove(i);
-				i--;
-				if (player.getHealth() >= 5){//Si tiene 3 vidas no se le dan más
-					player.setHealth(5);
-					player.setScore(250);
-				}
-				else{
-					player.setHealth(player.getHealth()+1);
+			///////////////////////////////////////////////////////////////////////////////////
+			//VERIFICACION DE LOS ATAQUES HACIA LOS DIFERENTES ENEMIGOS
+			player.checkAttack(enemies,1);
+			player.checkAttack(enemies2,2);
+			player.checkAttack(enemies3, 2);
+			player.checkAttack(enemies4,2);
+			player.checkAttackBoss(enemiesboss,1);
+			player.checkCapture(relics);
+			player.checkHearts(hearts);
+			player.checkFire(fires);
+			player.checkGetters(getters);
+			Boss1.checkAttack(players);
+			//////////////////////////////////////////////////////////////////////////////////
+			
+			//################################################################################
+			//###################### ACTUALIZACION DE OBJETOS  ###############################
+			//################################################################################
+			
+			//Actualizar Fires
+			for(int i = 0; i < fires.size(); i++){
+				Fire f = fires.get(i);
+				f.update();
+				if(f.isDead()){
+					fires.remove(i);
+					i--; //QUitar al enemigo del array
+					explosions.add(new Explosion(f.getx(), f.gety())); //Añade explosion
+																			   //al chocar.
+					player.setScore(500);//Añade Puntos por apagar el fuego.
 				}
 			}
-		}
-		//Actualizar FireballGetters Adicionales
-		for(int i = 0; i < getters.size(); i++){
-			Enemy e = getters.get(i);
-			e.update();
-			if(e.isTook()==true){
-				getters.remove(i);
-				i--;
-				if (Player.getFireType() == 2){
-					return;
+			//Actualizar Corazones Adicionales
+			for(int i = 0; i < hearts.size(); i++){
+				Enemy e = hearts.get(i);
+				e.update();
+				if(e.isTook()){
+					hearts.remove(i);
+					i--;
+					if (player.getHealth() >= 5){//Si tiene 3 vidas no se le dan más
+						player.setHealth(5);
+						player.setScore(250);
+					}
+					else{
+						player.setHealth(player.getHealth()+1);
+					}
 				}
-				else{
-					player.setFireType(2);
-					player.setFireBallDamage(15); //NUEVO DAÑO DE LA BALA
+			}
+			//Actualizar FireballGetters Adicionales
+			for(int i = 0; i < getters.size(); i++){
+				Enemy e = getters.get(i);
+				e.update();
+				if(e.isTook()==true){
+					getters.remove(i);
+					i--;
+					if (Player.getFireType() == 2){
+						return;
+					}
+					else{
+						player.setFireType(2);
+						player.setFireBallDamage(15); //NUEVO DAÑO DE LA BALA
+					}
 				}
 			}
-		}
-		//Actualizar Reliquias
-		for(int i = 0; i < relics.size(); i++){
-			Enemy e = relics.get(i);
-			e.update();
-			if(e.isTook()){
-				relics.remove(i);
-				i--; //QUitar al enemigo de la GUI y además lo remuves del array
-				player.setScore(400);//Añade Puntos por recupera la reliquia
+			//Actualizar Reliquias
+			for(int i = 0; i < relics.size(); i++){
+				Enemy e = relics.get(i);
+				e.update();
+				if(e.isTook()){
+					relics.remove(i);
+					i--; //QUitar al enemigo de la GUI y además lo remuves del array
+					player.setScore(400);//Añade Puntos por recupera la reliquia
+				}
 			}
-		}
-		//Actualizar Enemigos 1
-		for(int i = 0; i < enemies.size(); i++){
-			Enemy e = enemies.get(i);
-			if (e.gety() >= 225){
-				enemies.remove(i);
+			//Actualizar Enemigos 1
+			for(int i = 0; i < enemies.size(); i++){
+				Enemy e = enemies.get(i);
+				if (e.gety() >= 225){
+					enemies.remove(i);
+				}
+				e.update();
+				if(e.isDead()){
+					enemies.remove(i);
+					i--; //QUitar al enemigo del array
+					explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
+																	   //al chocar.
+					player.setScore(50);//Añade Puntos por matar el enemigo
+				}
 			}
-			e.update();
-			if(e.isDead()){
-				enemies.remove(i);
-				i--; //QUitar al enemigo del array
-				explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
-																   //al chocar.
-				player.setScore(50);//Añade Puntos por matar el enemigo
+			//Actualizar Enemigos 2
+			for(int i = 0; i < enemies2.size(); i++){
+				Enemy e = enemies2.get(i);
+				if (e.gety() >= 225){
+					enemies.remove(i);
+				}
+				e.update();
+				if(e.isDead()){
+					enemies2.remove(i);
+					i--; //QUitar al enemigo del array
+					explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
+																	  //al chocar.
+					player.setScore(50);//Añade Puntos por matar el enemigo
+				}
 			}
-		}
-		//Actualizar Enemigos 2
-		for(int i = 0; i < enemies2.size(); i++){
-			Enemy e = enemies2.get(i);
-			if (e.gety() >= 225){
-				enemies.remove(i);
+			//Actualizar Enemigos 4
+			for(int i = 0; i < enemies3.size(); i++){
+				Enemy e = enemies3.get(i);
+				if (e.gety() >= 225){
+					enemies.remove(i);
+				}
+				e.update();
+				if(e.isDead()){
+					enemies3.remove(i);
+					i--; //QUitar al enemigo del array
+					explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
+																	   //al chocar.
+					player.setScore(25);//Añade Puntos por matar el enemigo
+				}
 			}
-			e.update();
-			if(e.isDead()){
-				enemies2.remove(i);
-				i--; //QUitar al enemigo del array
-				explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
-																  //al chocar.
-				player.setScore(50);//Añade Puntos por matar el enemigo
+			//Actualizar Enemigos 4
+			for(int i = 0; i < enemies4.size(); i++){
+				Enemy e = enemies4.get(i);
+				if (e.gety() >= 225){
+					enemies.remove(i);
+				}
+				e.update();
+				if(e.isDead()){
+					enemies4.remove(i);
+					i--; //QUitar al enemigo del array
+					explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
+																	   //al chocar.
+					player.setScore(25);//Añade Puntos por matar el enemigo
+				}
 			}
-		}
-		//Actualizar Enemigos 4
-		for(int i = 0; i < enemies4.size(); i++){
-			Enemy e = enemies4.get(i);
-			if (e.gety() >= 225){
-				enemies.remove(i);
+			//Actualizar JEFE FINAL
+			for(int i = 0; i < enemiesboss.size(); i++){
+				Enemy e = enemiesboss.get(i);
+				if (e.gety() >= 225){
+					enemies.remove(i);
+				}
+				e.update();
+				if(e.isDead()){
+					enemiesboss.remove(i);
+					i--; //QUitar al enemigo del array
+					explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
+																	   //al chocar.
+					player.setScore(25);//Añade Puntos por matar el enemigo
+				}
 			}
-			e.update();
-			if(e.isDead()){
-				enemies4.remove(i);
-				i--; //QUitar al enemigo del array
-				explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
-																   //al chocar.
-				player.setScore(25);//Añade Puntos por matar el enemigo
-			}
-		}
-		//Actualizar JEFE FINAL
-		for(int i = 0; i < enemiesboss.size(); i++){
-			Enemy e = enemiesboss.get(i);
-			if (e.gety() >= 225){
-				enemies.remove(i);
-			}
-			e.update();
-			if(e.isDead()){
-				enemiesboss.remove(i);
-				i--; //QUitar al enemigo del array
-				explosions.add(new Explosion(e.getx(), e.gety())); //Añade explosion
-																   //al chocar.
-				player.setScore(25);//Añade Puntos por matar el enemigo
-			}
-		}
-		//Acualizar Explisiones
-		for(int i = 0; i < explosions.size(); i++){
-			explosions.get(i).update();
-			if(explosions.get(i).shouldRemove()){
-				explosions.remove(i); //Para que luego de crear la explosion la elimne
-				i--;
+			//Acualizar Explisiones
+			for(int i = 0; i < explosions.size(); i++){
+				explosions.get(i).update();
+				if(explosions.get(i).shouldRemove()){
+					explosions.remove(i); //Para que luego de crear la explosion la elimne
+					i--;
+				}
 			}
 		}
 	}
@@ -527,6 +590,10 @@ public class Level3State extends GameState {
 			enemies2.get(i).draw(g);
 		}
 		//Dibuja Enemigos 4
+		for (int i = 0; i < enemies3.size(); i++){
+			enemies3.get(i).draw(g);
+		}
+		//Dibuja Enemigos 4
 		for (int i = 0; i < enemies4.size(); i++){
 			enemies4.get(i).draw(g);
 		}
@@ -542,7 +609,22 @@ public class Level3State extends GameState {
 		//Dibujar el HUD
 		hud.draw(g);
 		hud2.draw(g);
-		
+		g.setColor(Color.WHITE);
+		g.drawString("Flight Mode:",2,60);
+		if(player.getGliding() == true){
+			g.setColor(Color.green);
+			g.drawString("ON", 65, 60);
+		}
+		else{
+			g.setColor(Color.red);
+			g.drawString("OFF",65,60);
+		}
+		g.setColor(Color.yellow);
+		g.drawString("Level 3",150,10);
+		if(pause == true){
+			g.setColor(Color.green);
+			g.drawString("GAME PAUSED",130,90);
+		}
 	}
 	
 	
@@ -550,9 +632,7 @@ public class Level3State extends GameState {
 	//######################    DETECCION DE TECLAS    ###############################
 	//################################################################################
 	public void keyPressed(int k) {
-		if(k == KeyEvent.VK_H) player.setHealth(10);
-		
-		
+		if(k == KeyEvent.VK_H && trick == true) Player.setLives(10);
 		if (k == KeyEvent.VK_LEFT) player.setLeft(true);
 		if (k == KeyEvent.VK_RIGHT) player.setRight(true);
 		if (k == KeyEvent.VK_UP) player.setUp(true);
@@ -561,16 +641,28 @@ public class Level3State extends GameState {
 		if (k == KeyEvent.VK_E) player.setGliding(true);
 		if (k == KeyEvent.VK_R) player.setScratching();
 		if (k == KeyEvent.VK_F) player.setFiring();
-		if (k == KeyEvent.VK_F1){
+		if (k == KeyEvent.VK_ESCAPE){
 			int reply = JOptionPane.showConfirmDialog(null,"Exit to Main Menu?","Confirmation Dialog", JOptionPane.YES_NO_OPTION);
 	        if (reply == JOptionPane.YES_OPTION) {
 	        	SoundGame.music.stop();
 	        	SoundMenu.music.start();
+	        	Player.resetBossCount();
 	        	gsm.setState(GameStateManager.MENUSTATE,0,0);
 	        }
 	        else {
 	           return;
 	        }
+		}
+		if (k == KeyEvent.VK_SHIFT) trick = true;
+		if (k == KeyEvent.VK_P){
+			if(pause == false){
+				pause = true;
+				SoundGame.music.stop();
+			}
+			else{
+				pause = false;
+				SoundGame.music.play();
+			}
 		}
 	}
 	public void keyReleased(int k){
@@ -580,7 +672,33 @@ public class Level3State extends GameState {
 		if (k == KeyEvent.VK_DOWN) player.setDown(false);
 		if (k == KeyEvent.VK_W) player.setJumping(false);
 		if (k == KeyEvent.VK_E) player.setGliding(false);
+		if (k == KeyEvent.VK_SHIFT) trick = false;
 	}
 	
-
+	public static void setEnter(){ player.setFiring(); }
+	public static void setUp(){ player.setJumping(true);}
+	public static void setDown(){ 
+		if(player.getGliding() == true){
+			player.setGliding(false); 
+		}
+		else{
+			player.setGliding(true);
+		}
+	} 
+	public static void setLives(){Player.setLives(5);}
+	public static void setTime(){player.setTime(500);}
+	public static void setA(){player.setScratching();}
+	public static void setLeft(){player.setLeft(true);}
+	public static void setRight(){player.setRight(true);}
+	public static void remove(){player.setRight(false);player.setLeft(false);player.setJumping(false);}
+	public static void setPause(){
+		if(pause == false){
+			pause = true;
+			SoundGame.music.stop();
+		}
+		else{
+			pause = false;
+			SoundGame.music.start();
+		}
+	}
 }

@@ -1,13 +1,19 @@
 package gui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 
 import logic.Background;
 import logic.ReadProperties;
+import logic.SoundGame;
 import logic.SoundMenu;
 
 public class GameOverState extends GameState{
+	
+	public static boolean _up;
+	public static boolean _down;
+	public static boolean _enter;
 	private Background bg;
 	private int currentChoice = 0;
 	
@@ -44,6 +50,22 @@ public class GameOverState extends GameState{
 	public void init(int inhealth, int inscore){}
 	public void update(){
 		bg.update();
+		if(_up == true){
+			currentChoice--;
+			if(currentChoice == -1){
+				currentChoice = menu.length -1;}
+			_up=false;
+		}
+		if(_down == true){
+			currentChoice++;
+			if (currentChoice == menu.length){
+				currentChoice = 0;}
+			_down=false;
+		}
+		if(_enter == true){
+			select();
+			_enter=false;
+		}
 	}
 	public void draw(java.awt.Graphics2D g){
 		//Dibujar Fondo
@@ -75,6 +97,7 @@ public class GameOverState extends GameState{
 			//Regresar
 			
 			gsm.setState(GameStateManager.LEVEL1STATE,5,0);
+			SoundGame.music.start();
 			
 		}
 		else if(currentChoice==1){
@@ -101,4 +124,7 @@ public class GameOverState extends GameState{
 		}
 	}
 	public void keyReleased(int k){}
+	protected static void setUp(){ _up=true; }
+	protected static void setDown(){ _down=true; }
+	protected static void setEnter(){ _enter=true; }
 }

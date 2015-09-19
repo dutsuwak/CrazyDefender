@@ -2,14 +2,22 @@ package entities;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
-
 import logic.ReadProperties;
 import logic.Sound;
 import TileMap.TileMap;
 import entities.Player;
 
+
+/**
+ * Clase que permite la instanciacion de proyectiles tanto del enemigo como del jugador. Hereda
+ * de la super clase MapObject por lo tanto se pueden saber sus posiciones x, y en el juego. 
+ * Además por medio de la clase Sound, reproduce sonidos al moverse a través del mapa y al chocar 
+ * con algún objeto del juego.
+ * 
+ * @author Fabian A. Solano Madriz
+ *
+ */
 public class FireBall extends MapObject {
 	
 	public static int FBCounter=0;

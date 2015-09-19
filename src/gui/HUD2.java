@@ -1,6 +1,9 @@
 package gui;
 
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -9,6 +12,15 @@ import logic.ReadProperties;
 import entities.Player;
 import entities.Enemies.Boss1;
 
+/**
+ * Clase para que dibuja en el GUI la el HUD 2, el cual muestra el tiempo restante, la cantidad de
+ * reliquias recolectadas y los puntos del jugador.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.7
+ * 
+ *
+ */
 public class HUD2 {
 	
 	private Player player;

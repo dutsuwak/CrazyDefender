@@ -5,7 +5,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Properties;
 
-//Clase que permite leer el archivo properties.
+/**
+ * Clase que permite la escritura del archivo scores.properties. Básicamente vuelve a escribir los
+ * datos que estaban en él anteriormente a la edición y posteriormenten reemplaza el dato necesario
+ * con el nuevo valor asignado
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.6
+ *
+ */
 public class SaveScores {
 	
 	public static SaveScores file = null;

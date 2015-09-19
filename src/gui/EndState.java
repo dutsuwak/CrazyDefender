@@ -1,6 +1,8 @@
 package gui;
 
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 
 import logic.Background;
@@ -9,7 +11,18 @@ import logic.ReadScores;
 import logic.SaveScores;
 import logic.SoundMenu;
 
+/**
+ * Clase para que dibuja en el GUI la "ventana" de fin de juego.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 3.0
+ * 
+ *
+ */
 public class EndState extends GameState{
+	public static boolean _up = false;
+	public static boolean _down = false;
+	public static boolean _enter = false;
 	private Background bg;
 	private int counter;
 	private int savecounter;
@@ -58,6 +71,22 @@ public class EndState extends GameState{
 	public void update(){
 		bg.update();
 		counter--;
+		if(_up == true){
+			currentChoice--;
+			if(currentChoice == -1){
+				currentChoice = menu.length -1;}
+			_up=false;
+		}
+		if(_down == true){
+			currentChoice++;
+			if (currentChoice == menu.length){
+				currentChoice = 0;}
+			_down=false;
+		}
+		if(_enter == true){
+			select();
+			_enter=false;
+		}
 	}
 	public void draw(java.awt.Graphics2D g){
 		//Dibujar Fondo
@@ -101,7 +130,6 @@ public class EndState extends GameState{
 		if(pScore >= Integer.parseInt(ReadScores.file.getSetting("player1s"))){
 			if(savecounter ==0){
 				SaveScores.getInstance(MenuState.getname(),pScore+"","player1");
-				//System.out.println("SaveCounter1");
 				savecounter=1;
 			}
 			if((counter/60)%2 == 0){
@@ -190,4 +218,7 @@ public class EndState extends GameState{
 		}
 	}
 	public void keyReleased(int k){}
+	protected static void setUp(){ _up=true; }
+	protected static void setDown(){ _down=true; }
+	protected static void setEnter(){ _enter=true; }
 }

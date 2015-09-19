@@ -5,10 +5,21 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
+import entities.Animation;
+import entities.Enemy;
 import logic.ReadProperties;
-import entities.*;
 import TileMap.TileMap;
 
+/**
+ * Clase que hereda de la clase Enemigo. Permite la instanciacion de un "Fuego", el cual es un enemigo
+ * estatico que le reduce las vidas al jugador en 1. Este puede ser destruido pero tiene una gran
+ * resistencia.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 2.0
+ * 
+ *
+ */
 public class Fire extends Enemy{
 	private BufferedImage[] sprites;
 	

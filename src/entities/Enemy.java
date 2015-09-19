@@ -2,6 +2,15 @@ package entities;
 
 import TileMap.TileMap;
 
+/**
+ * Clase abstracta Enemy, de la cual heredan todas las clases que correspondan a enemigos
+ * de los niveles del juego. Contiene variables necesarias para indicar la vida, el daño 
+ * que realiza, el máximo de la vida, y una variable "Took" la cual se utiliza para los objetos
+ * los cuales el jugador puede obtener.
+ * 
+ * @author Fabian A. Solano Madriz
+ *
+ */
 public abstract class Enemy extends MapObject{
 	
 	protected int health;

@@ -1,12 +1,18 @@
 package logic;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import gui.GamePanel;
-
-import java.awt.image.*;
-import java.awt.*;
-
 import javax.imageio.ImageIO;
-
+/**
+ * Clase para que permite la instanciacion de alguna imagen para utilizarla en el fondo de alguna
+ * "ventana".
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 3.0
+ * 
+ *
+ */
 public class Background {
 	
 	private BufferedImage image;

@@ -1,13 +1,23 @@
 package gui;
 
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
-
 import entities.Player;
 import logic.ReadProperties;
 
+/**
+ * Clase para que dibuja en el GUI la el HUD 1, el cual muestra las vidas del jugador, y la bateria
+ * disponible para disparar cohetes.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.7
+ * 
+ *
+ */
 public class HUD {
 	
 	private Player player;

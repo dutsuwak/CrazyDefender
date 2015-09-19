@@ -7,32 +7,20 @@ import java.awt.event.KeyEvent;
 import logic.Background;
 import logic.ReadProperties;
 
-
 /**
- * Clase para que dibuja en el GUI la "ventana" About.
+ * Clase para que dibuja en el GUI la "ventana" Help.
  * 
  * @author Fabian A. Solano Madriz
  * @version 3.0
  * 
  *
  */
-public class AboutState extends GameState {
-
+public class HelpState extends GameState {
+	public static boolean _up = false;
+	public static boolean _down = false;
+	public static boolean _enter = false;
 	private Background bg;
 	private int currentChoice = 0;
-	public static boolean _up=false;
-	public static boolean _down=false;
-	public static boolean _enter=false;
-	private String[] texto = {
-			"Instituto Tecnológico de Costa Rica",
-			"Computer Engineering",
-			"Algoritmos y Estructuras de Datos I",
-			"Profesor: Gerardo Nereo Campos Araya",
-			"Estudiante: ",
-			"Fabián A. Solano Madriz",
-			"Version 1.0",
-			"Desarrollado sobre Java 1.8"
-	};
 	private String[] menu = {
 			"Menu",
 			"Exit"
@@ -43,12 +31,12 @@ public class AboutState extends GameState {
 	private Font font;
 	
 	
-	public AboutState(GameStateManager gsm){
+	public HelpState(GameStateManager gsm){
 		super();
 		this.gsm = gsm;
 		try{
-			bg = new Background(ReadProperties.file.getSetting("imgmenu"),1);
-			bg.setVector(0.3,0);//Movimiento a la derecha
+			bg = new Background(ReadProperties.file.getSetting("imghelp"),1);
+			//bg.setVector(0.3,0);//Movimiento a la derecha
 			
 			titleColor = new Color(0,0,255);
 			titleFont = new Font("Century Gothic", Font.PLAIN, 20);
@@ -86,13 +74,9 @@ public class AboutState extends GameState {
 		//Dibujar Texto del Titulo de Juego
 		g.setColor(Color.green);
 		g.setFont(titleFont);
-		g.drawString("About",10,20);
 		//Dibujar Texto a mostrar
 		g.setFont(font);
 		g.setColor(Color.white);
-		for (int i=0; i < texto.length; i++){
-			g.drawString(texto[i],50,65+i*18);
-		}
 		for (int i=0; i < menu.length; i++){
 			if (i==currentChoice){
 				g.setColor(Color.green);
@@ -100,7 +84,7 @@ public class AboutState extends GameState {
 			else{
 				g.setColor(Color.red);
 			}
-			g.drawString(menu[i],284,220 + i * 15);
+			g.drawString(menu[i],245+i*40,235);
 		}
 		
 	}

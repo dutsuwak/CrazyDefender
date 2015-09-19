@@ -1,7 +1,15 @@
 package logic;
 
-import java.applet.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 
+/**
+ * Clase que facilita la reproduccion de sonidos en el juego. Accediendo mediante variables estáticas.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.6
+ *
+ */
 public class Sound {
 	
 	

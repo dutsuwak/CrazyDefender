@@ -2,11 +2,24 @@ package entities.Enemies;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
 import javax.imageio.ImageIO;
+
+import entities.Animation;
+import entities.Enemy;
 import logic.ReadProperties;
-import entities.*;
 import TileMap.TileMap;
 
+/**
+ * Clase que hereda de la clase Enemigo. Permite la instanciacion de un objeto de enemigo tipo 1.
+ * Este se mueve de izquierda a derecha hasta chocar con algun obstáculo y se devuelve en 
+ * direccion contrario. Si colisiona con el jugador le resta una vida. Es sencillo de matar.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.5
+ * 
+ *
+ */
 public class Slugger extends Enemy{
 	
 	private BufferedImage[] sprites;

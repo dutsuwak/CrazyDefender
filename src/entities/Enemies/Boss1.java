@@ -13,6 +13,16 @@ import entities.Enemy;
 import entities.FireBall;
 import entities.Player;
 
+/**
+ * Clase que hereda de la clase Enemigo. Permite la instanciacion de un objeto de enemigo Boss.
+ * El jefe final de cada nivel. Puede replicar el disparo del jugador y de esta forma atacarlo.
+ * Además posee un "escudo" de 15 vidas. Es necesario destruir el escudo antes de poder matarlo.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.1
+ * 
+ *
+ */
 public class Boss1 extends Enemy {
 	private BufferedImage[] sprites;
 	double startx;

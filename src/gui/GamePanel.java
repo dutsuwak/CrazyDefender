@@ -1,12 +1,27 @@
 package gui;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.awt.event.*;
 
 import logic.ReadProperties;
 
 import javax.swing.JPanel;
+
+/**
+ * Clase para la instanciacion del ventana del juego. Obtiene los datos del tamaño de la ventana 
+ * y la escala del Archivo de config.properties, ubicado en la carpeta raíz del programa.
+ * <p>
+ * Esta clase esta basada en la vista en el video tutorial de ForeignGuyMike
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.2
+ * @see <a href="https://www.youtube.com/watch?v=9dzhgsVaiSo">ForeignGuyMike Youtube Channel</a>
+ *
+ */
 
 @SuppressWarnings("serial")
 public class GamePanel extends JPanel implements Runnable, KeyListener{

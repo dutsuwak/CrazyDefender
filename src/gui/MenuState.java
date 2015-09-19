@@ -1,6 +1,6 @@
 package gui;
 
-//import gnu.io.SerialPortEventListener;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -11,13 +11,27 @@ import logic.ReadProperties;
 import logic.SoundGame;
 import logic.SoundMenu;
 
+/**
+ * Clase para que dibuja en el GUI la "ventana" Men� Principal
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 3.0
+ * 
+ *
+ */
 public class MenuState extends GameState{
 	
+	
+	public static boolean _up = false;
+	public static boolean _down = false;
+	public static boolean _enter = false;
+	
 	public static String playername;
+	//public SerialTestJustWin input;
 	private int InHealth;
 	//private static final String bg_src = Game.getSetting("imgMenu");
 	private Background bg;
-	private int currentChoice = 0;
+	private int currentChoice = 4;
 	private String[] options = {
 			"Start",
 			"Profile",
@@ -26,13 +40,10 @@ public class MenuState extends GameState{
 			"About",
 			"Quit",
 	};
-	
 	private Color titleColor;
 	private Font titleFont;
 	
 	private Font font;
-	
-	//SerialPortEventListener evento;
 	
 	public MenuState(GameStateManager gsm, int inhealth, int inscore){
 		
@@ -54,9 +65,15 @@ public class MenuState extends GameState{
 			titleFont = new Font("Century Gothic", Font.PLAIN, 18);
 			font = new Font("Arial",Font.PLAIN, 12);
 			
+			//HARDWARE, JUST IN WINDOWS, or instal library (RXTX)
+			/*if(Integer.parseInt(ReadProperties.file.getSetting("Controller"))==1){
+				input = new SerialTestJustWin();
+				input.run();
+			}*/
+
 		}
 		catch(NullPointerException e){
-			e.printStackTrace(); //Para detectar algún posible error
+			e.printStackTrace(); //Para detectar algun posible error
 		}
 	}
 	
@@ -65,6 +82,26 @@ public class MenuState extends GameState{
 	}
 	public void update(){
 		bg.update();
+		
+		if(_up == true){
+			currentChoice--;
+			if(currentChoice == -1){
+				currentChoice = options.length -1;}
+			_up=false;
+		}
+		if(_down == true){
+			currentChoice++;
+			if (currentChoice == options.length){
+				currentChoice = 0;}
+			_down=false;
+		}
+		if(_enter == true){
+			if(currentChoice == 3){
+				return;
+			}
+			select();
+			_enter=false;
+		}
 	}
 
 	public void draw(Graphics2D g){
@@ -106,7 +143,7 @@ public class MenuState extends GameState{
 		}
 		if (currentChoice == 3){
 			//Ayuda
-
+			gsm.setState(GameStateManager.HELPSTATE, 0, 0);
 		}
 		if (currentChoice ==4){
 			//About
@@ -131,10 +168,15 @@ public class MenuState extends GameState{
 			if (currentChoice == options.length){
 				currentChoice = 0;}
 		}
+		
 	}
 	public void keyReleased(int k){}
 	
 	public static String getname(){
 		return playername;
 	}
+	
+	protected static void setUp(){ _up=true; }
+	protected static void setDown(){ _down=true; }
+	protected static void setEnter(){ _enter=true; }
 }

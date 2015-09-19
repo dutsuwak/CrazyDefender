@@ -6,6 +6,17 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle; //Para crear rectangulo para deteccion de colisiones
 import TileMap.Tile;
 
+/**
+ * Clase madre de los objetos dentro del juego. Todos los objetos del juego poseen las variables
+ * y métodos de esta clase para de esta forma tenerlos agrupados y acceder a sus atributos de 
+ * manera sencilla y ordenada.
+ * <p>
+ * Esta clase esta basada en la vista en el video tutorial de ForeignGuyMike
+ * @author Fabian A. Solano Madriz
+ * @version 1.2
+ * @see <a href="https://www.youtube.com/watch?v=9dzhgsVaiSo">ForeignGuyMike Youtube Channel</a>
+ *
+ */
 //Root para todos los objetos.
 public abstract class MapObject {
 	//Protected para que las subclases lo puedan utilizar
@@ -25,7 +36,7 @@ public abstract class MapObject {
 	protected int width;
 	protected int height;
 	
-	//Caja de ColisiÃ³n, para detectar las colisiones
+	//Caja de Colisión, para detectar las colisiones
 	protected int cwidth;
 	protected int cheight;
 	

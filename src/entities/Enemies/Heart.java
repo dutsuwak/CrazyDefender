@@ -2,13 +2,23 @@ package entities.Enemies;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
-
+import entities.Animation;
+import entities.Enemy;
 import logic.ReadProperties;
-import entities.*;
 import TileMap.TileMap;
 
+
+/**
+ * Clase que hereda de la clase Enemigo. Permite la instanciacion de un "Power Up" que le adiciona
+ * una vida al jugador si este tiene menos de 5 vidas, de lo contrario el jugador gana 250 puntos.
+ * Utiliza la variable took para poder identificar si el jugador ya ha tomado el objeto.
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 2.0
+ * 
+ *
+ */
 public class Heart extends Enemy{
 	
 	private BufferedImage[] sprites;

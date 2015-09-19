@@ -5,6 +5,12 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import logic.ReadProperties;
 
+/**
+ * Clase que permite manejar los eventos de las explosiones dentro del juego
+ * 
+ * @author Fabian A. Solano Madriz
+ *
+ */
 public class Explosion {
 	
 	private int x;

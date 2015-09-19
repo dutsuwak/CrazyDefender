@@ -2,18 +2,27 @@ package entities.Enemies;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
 import javax.imageio.ImageIO;
+
+import entities.Animation;
+import entities.Enemy;
 import logic.ReadProperties;
-import entities.*;
 import TileMap.TileMap;
 
-
-public class Relic extends Enemy 
-{
+/**
+ * Clase que hereda de la clase Enemigo. Permite la instanciacion de una reliquia las cuales son
+ * requeridas para pasar de nivel (3 Por Nivel).
+ * 
+ * @author Fabian A. Solano Madriz
+ * @version 1.1
+ * 
+ *
+ */
+public class Relic extends Enemy {
 	private BufferedImage[] sprites;
 	
-	public Relic (TileMap tm)
-	{
+	public Relic (TileMap tm){
 		super(tm);
 		
 		width = 30;
@@ -22,8 +31,7 @@ public class Relic extends Enemy
 		cheight = 20;
 		took = false;
 		
-		try
-		{
+		try{
 			BufferedImage spritesheet = ImageIO.read(
 					getClass().getResourceAsStream(ReadProperties.file.getSetting("relic")));
 			sprites = new BufferedImage[3];

@@ -1,25 +1,22 @@
 package entities;
 
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
-
 import TileMap.TileMap;
 import entities.Enemies.Boss1;
 import entities.Enemies.Fire;
 import entities.Enemies.FireballGetter;
 import entities.Enemies.Heart;
 import entities.Enemies.Relic;
-
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import logic.ReadProperties;
 import logic.Sound;
 
 public class Player extends MapObject {
 	
 	//Caracteristicas de Jugador
+	
 	private static int health; //SI HAY ERROR CAMBIAR sin STATIC
 	@SuppressWarnings("unused")
 	private int lives;
@@ -29,23 +26,26 @@ public class Player extends MapObject {
 	private int maxHealth;
 	private int fire;
 	private int maxFire;
-	public int bosskill;
+	public static int bosskill;
 	@SuppressWarnings("unused")
 	private boolean dead;
 	private boolean flinching;
 	private long flinchTimer;
 	private int time;
 	
-	//Caracter√≠sticas del Disaro
+	public static boolean fcright;
+	public static double yy;
+	
+	//Caracter√sticas del Disaro
 	private boolean firing;
 	private static int fireType;
 	private int fireCost;
 	private int fireBallDamage;
 	private ArrayList<FireBall> fireBalls;
 	
-	//Caracter√≠sticas Ataque Secundario
+	//CaracterÌsticas Ataque Secundario
 	private boolean scratching;
-	private int scratchDamage; //NOTA Cambiar tipo a booleano si hay error
+	private int scratchDamage; 
 	private int scratchRange;
 	
 	//Planeo
@@ -80,8 +80,15 @@ public class Player extends MapObject {
 		stopSpeed = 0.4;
 		fallSpeed = 0.11;
 		maxFallSpeed = 4.0;
-		jumpStart = -4.8;
-		stopJumpSpeed = 0.3;
+		if(Integer.parseInt(ReadProperties.file.getSetting("Controller"))==1){
+			jumpStart = -5.0;
+			stopJumpSpeed = 0.3;
+		}
+		else{
+			jumpStart = -4.8;
+			stopJumpSpeed = 0.3;
+		}
+		
 		
 		facingRight = true; //El jugador inicia viendo hacia la derecha,
 		
@@ -100,7 +107,7 @@ public class Player extends MapObject {
 		scratchDamage = 8;
 		scratchRange = 40;
 		
-		time = 7400; //Por la conversion de ms a s
+		time = Integer.parseInt(ReadProperties.file.getSetting("time")); //Por la conversion de ms a s
 		
 		//CARGA DE LAS IMAGENES
 		try{
@@ -432,7 +439,7 @@ public class Player extends MapObject {
 	public void update(){
 		//CONTADOR
 		time--;
-		
+		yy = y;
 		getNextPosition();
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
@@ -536,8 +543,14 @@ public class Player extends MapObject {
 		animation.update();
 		//Direccion que el jugador esta viend
 		if (currentAction != SCRATCHING && currentAction != FIREBALL){
-			if(right) facingRight = true;
-			if(left) facingRight = false;
+			if(right) {
+				facingRight = true;
+				fcright= true;
+			}
+			if(left){
+				facingRight = false;
+				fcright = false;
+			}
 		}
 	}
 	
@@ -569,8 +582,12 @@ public class Player extends MapObject {
 	public static int getFireType() { return fireType; }
 	public int getexitCounter() { return exitCounter; }
 	public long getTime() { return time; }
-	public void setTime(int t) { time = t; }
+	public void setTime(int t) { time += t; }
 	public int getbossKill() { return bosskill; }
+	public boolean getJumping(){return jumping;}
+	public boolean getGliding(){return gliding;}
+	public static boolean getFacing(){return fcright;}
+	public static double getYY(){ return yy;}
 	
 	//SETTERS
 	public void sety(int location){ y = location;}
@@ -581,7 +598,7 @@ public class Player extends MapObject {
 	public void setFireBallDamage(int type){ fireBallDamage = type;}
 	public void setExitCounter(int times){ exitCounter += times;}
 	public void setHealth(int i) { health = i; }
-	public static void setLives(int i) { health = i; }
+	public static void setLives(int i) { health += i; }
 	public void setDead() { health = 0; stop();}
 	public void setBossKill() { bosskill+=1;}
 	public void reset() {
@@ -590,5 +607,5 @@ public class Player extends MapObject {
 		currentAction = -1;
 		stop();}
 	public void stop() {left = right = up = down = flinching = jumping=false;}
-	
+	public static void resetBossCount(){bosskill =0;}
 }
